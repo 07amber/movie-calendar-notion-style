@@ -217,13 +217,6 @@
       .regionTag.mainland{ background: rgba(59,130,246,0.18); color: #93c5fd; border-color: rgba(59,130,246,0.35); }
       .regionTag.hk{ background: rgba(168,85,247,0.14); color: #d8b4fe; border-color: rgba(168,85,247,0.32); }
 
-      .card a{
-        color: inherit;
-        text-decoration: none;
-      }
-      .card a:hover .title{
-        text-decoration: underline;
-      }
 
       .footNote{
         margin-top: 16px;
@@ -249,6 +242,11 @@
   .card{
     padding:0;
   }
+}
+      .cardLink{
+  display: block;
+  color: inherit;
+  text-decoration: none;
 }
     </style>
   </head>
@@ -310,24 +308,27 @@ const renderCards = (cards, dateStr) => {
       const link = c.link || '#';
 
       return `
-        <div class="card">
-  <a href="${link}" target="_blank" rel="noreferrer noopener">
-    <img src="${poster}" alt="" loading="lazy" />
-  </a>
+  <a href="${link}" target="_blank" rel="noreferrer noopener" class="cardLink">
 
-  <div class="info">
-            <div class="t">
-              <a href="${link}" target="_blank">
-                <div class="title">
-                  ${escapeHtml(titleLocal)}
-                  <small>${escapeHtml(titleEn)}</small>
-                </div>
-              </a>
-              <div class="regionTag ${tagClass}">${escapeHtml(c.region || '')}</div>
-            </div>
+    <div class="card">
+      <img src="${poster}" alt="${escHtml(titleLocal)}" loading="lazy" />
+
+      <div class="info">
+        <div class="t">
+          <div class="title">
+            ${escapeHtml(titleLocal)}
+            <small>${escapeHtml(titleEn)}</small>
+          </div>
+
+          <div class="regionTag ${tagClass}">
+            ${escapeHtml(c.region || '')}
           </div>
         </div>
-      `;
+      </div>
+    </div>
+
+  </a>
+`;
     }).join('')}
 
     ${extra > 0 && !isExpanded 
