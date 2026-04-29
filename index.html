@@ -311,8 +311,11 @@ const renderCards = (cards, dateStr) => {
 
       return `
         <div class="card">
-          <img src="${poster}" />
-          <div class="info">
+  <a href="${link}" target="_blank" rel="noreferrer noopener">
+    <img src="${poster}" alt="" loading="lazy" />
+  </a>
+
+  <div class="info">
             <div class="t">
               <a href="${link}" target="_blank">
                 <div class="title">
