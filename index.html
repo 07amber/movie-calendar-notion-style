@@ -502,18 +502,46 @@ const renderCards = (cards, dateStr) => {
         return monthEl;
       }
 
-      function render(){
-        monthGrid.innerHTML = '';
-        const grouped = groupByMonth(MOVIES);
-        const keys = Array.from(grouped.keys()).sort();
-        for (const k of keys){
-          const [y, m] = k.split('-').map(Number);
-          const monthIndex0 = m - 1;
-          const movies = grouped.get(k) || [];
-          // If date range includes other months, still render only those present.
-          monthGrid.appendChild(makeMonthCard({year: y, monthIndex0, movies}));
-        }
-      }
+      function render() {
+  monthGrid.innerHTML = '';
+
+  // 1. 获取当前系统时间的月份
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-11
+
+  // 2. 准备当月和下月的日期对象
+  const m1 = new Date(currentYear, currentMonth, 1);
+  const m2 = new Date(currentYear, currentMonth + 1, 1);
+
+  // 格式化为 "YYYY-MM"
+  const k1 = m1.getFullYear() + '-' + String(m1.getMonth() + 1).padStart(2, '0');
+  const k2 = m2.getFullYear() + '-' + String(m2.getMonth() + 1).padStart(2, '0');
+
+  // 3. 筛选数据（如果 generatePage.js 已经过滤过，这里其实是双重保险）
+  const filtered = MOVIES.filter(m => {
+    const k = ymKey(m.release_date);
+    return k === k1 || k === k2;
+  });
+
+  const grouped = groupByMonth(filtered);
+  
+  // 4. 强制只按这两个月的顺序循环渲染
+  const keys = [k1, k2]; 
+
+  keys.forEach(k => {
+    const [y, m] = k.split('-').map(Number);
+    const monthIndex0 = m - 1;
+    const moviesInMonth = grouped.get(k) || []; // 如果这个月没电影，则为空数组
+    
+    // 调用原有的 makeMonthCard 函数
+    monthGrid.appendChild(makeMonthCard({
+      year: y, 
+      monthIndex0: monthIndex0, 
+      movies: moviesInMonth
+    }));
+  });
+}
 
       // Filter re-render without losing scroll position.
       document.addEventListener('change', (e) => {
