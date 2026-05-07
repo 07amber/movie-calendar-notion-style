@@ -15,6 +15,18 @@ const outPath = path.join(__dirname, "index.html");
 
 const movies = JSON.parse(fs.readFileSync(moviesPath, "utf8"));
 
+const now = new Date();
+const k1 = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+const k2 = nextMonthDate.getFullYear() + '-' + String(nextMonthDate.getMonth() + 1).padStart(2, '0');
+
+// 只筛选这两个月的数据嵌入到 HTML 中
+const movies = allMovies.filter(m => {
+  if (!m.release_date) return false;
+  const k = m.release_date.substring(0, 7); // 截取 "YYYY-MM"
+  return k === k1 || k === k2;
+});
+
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 // Small CSS/JS are kept inline for a single-file deliverable experience.
